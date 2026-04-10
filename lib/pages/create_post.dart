@@ -81,95 +81,97 @@ class _CreatePostState extends State<CreatePost> {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.85,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'Pick a location on the map',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Tap anywhere on the map to update the geo-location field.',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: FlutterMap(
-                      options: MapOptions(
-                        initialCenter: tempLocation,
-                        initialZoom: 14,
-                        onTap: (tapPosition, point) {
-                          setSheetState(() {
-                            tempLocation = point;
-                          });
-                        },
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.example.home_finder_',
-                        ),
-                        MarkerLayer(
-                          markers: [
-                            Marker(
-                              point: tempLocation,
-                              width: 44,
-                              height: 44,
-                              child: const Icon(
-                                Icons.location_pin,
-                                color: Colors.red,
-                                size: 44,
-                              ),
+        return SafeArea(
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.85,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Pick a location on the map',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          _formatLocation(tempLocation),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: () {
-                            _applySelectedLocation(tempLocation);
-                            Navigator.pop(context);
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Tap anywhere on the map to update the geo-location field.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: tempLocation,
+                          initialZoom: 14,
+                          onTap: (tapPosition, point) {
+                            setSheetState(() {
+                              tempLocation = point;
+                            });
                           },
-                          child: const Text('Use this location'),
                         ),
-                      ],
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.example.home_finder_',
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: tempLocation,
+                                width: 44,
+                                height: 44,
+                                child: const Icon(
+                                  Icons.location_pin,
+                                  color: Colors.red,
+                                  size: 44,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            _formatLocation(tempLocation),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: () {
+                              _applySelectedLocation(tempLocation);
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Use this location'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
