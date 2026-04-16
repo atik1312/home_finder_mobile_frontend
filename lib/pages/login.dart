@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin{
+  bool _isSecured=true;
   late AnimationController _controller;
   late Animation<Offset> _animation;
   final _formKey = GlobalKey<FormState>();
@@ -137,11 +138,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: TextFormField(
-                          obscureText: true,
+                          obscureText: _isSecured,
                           controller: _passwordController,
                           decoration: InputDecoration(
                             filled: true,
                             prefixIcon: const Icon(Icons.password),
+                            suffixIcon: IconButton(onPressed: (){
+                              setState(() {
+                                _isSecured=!_isSecured;
+                              });
+                            }, icon: Icon(_isSecured?Icons.visibility:Icons.visibility_off)),
                             hintText: "Password (atleast 6 characters)",
                              fillColor: const Color.fromARGB(255, 235, 245, 192),
                             border: OutlineInputBorder(

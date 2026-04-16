@@ -16,6 +16,8 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   double height=0;
+  bool _isSecured=true;
+  bool _isSecured2=true;
   final _formKey = GlobalKey<FormState>();
   final _nameController=TextEditingController();
   final _emailController = TextEditingController();
@@ -145,11 +147,17 @@ class _SignUpState extends State<SignUp> {
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: TextFormField(
-                                    obscureText: true,
+                                    obscureText: _isSecured,
                                     controller: _passwordController,
                                     decoration: InputDecoration(
                                       filled: true,
                                       prefixIcon: const Icon(Icons.password),
+                                      suffixIcon: IconButton(onPressed: (){
+                                        setState(() {
+                                          _isSecured=!_isSecured;
+                                        });
+                                      }, icon: Icon(_isSecured?Icons.visibility:Icons.visibility_off)),
+                                
                                       hintText: "Password (atleast 6 characters)",
                                        fillColor: const Color.fromARGB(255, 235, 245, 192),
                                       border: OutlineInputBorder(
@@ -169,10 +177,15 @@ class _SignUpState extends State<SignUp> {
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: TextFormField(
-                                    obscureText: true,
+                                    obscureText: _isSecured2,
                                     controller: _repasswordController,
                                     decoration: InputDecoration(
                                       filled: true,
+                                      suffixIcon: IconButton(onPressed: (){
+                                        setState(() {
+                                          _isSecured2=!_isSecured2;
+                                        });
+                                      }, icon: Icon(_isSecured2?Icons.visibility:Icons.visibility_off)),
                                       prefixIcon: const Icon(Icons.password),
                                       hintText: "Confirm Password (same as pasword)",
                                        fillColor: const Color.fromARGB(255, 235, 245, 192),

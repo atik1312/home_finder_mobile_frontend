@@ -394,7 +394,7 @@ class _PostItemState extends State<PostItem> {
                 ),
                 child: Text(
                   widget.post.rentPrice != null
-                      ? 'Price: \$${widget.post.rentPrice}'
+                      ? 'Price:${widget.post.rentPrice} tk.'
                       : 'Price: Not available',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,

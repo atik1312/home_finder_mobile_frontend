@@ -8,7 +8,7 @@ import 'package:home_finder_/models/user.dart';
 
 class ApiService {
   static const String _baseUrl = "https://shariar231.pythonanywhere.com";
-
+  static String get baseUrl => _baseUrl;  
   static Future<dynamic> logIn(String email, String password) async {
 
     final url="$_baseUrl/login/";
@@ -266,6 +266,79 @@ class ApiService {
         return "Add comment failed: ${response.statusCode}";
       }
     }catch(e){
+      log(e.toString());
+      return e.toString();
+    }
+  }
+
+  static Future<dynamic> updatePost({
+    required num postId,
+    required String userId,
+    required String houseNumber,
+    required String geoLocation,
+    required String address,
+    String? description,
+    String? rentPrice,
+    required bool isRented,
+    required bool onlyForMale,
+    required bool onlyForFemale,
+    List<XFile> images = const [],
+    List<XFile> videos = const [],
+  }) async {
+    final url = "$_baseUrl/posts/delete/$postId/";
+
+    try {
+      final request = http.MultipartRequest('PATCH', Uri.parse(url));
+      request.headers['Accept'] = 'application/json';
+
+      request.fields['user'] = userId;
+      request.fields['house_number'] = houseNumber;
+      request.fields['geo_location'] = geoLocation;
+      request.fields['address'] = address;
+      request.fields['is_rented'] = isRented.toString();
+      request.fields['onlyfor_male'] = onlyForMale.toString();
+      request.fields['onlyfor_female'] = onlyForFemale.toString();
+
+      if (description != null && description.trim().isNotEmpty) {
+        request.fields['description'] = description.trim();
+      }
+
+      if (rentPrice != null && rentPrice.trim().isNotEmpty) {
+        request.fields['rent_price'] = rentPrice.trim();
+      }
+
+      for (final image in images) {
+        request.files.add(
+          await http.MultipartFile.fromPath('uploaded_images', image.path),
+        );
+      }
+
+      for (final video in videos) {
+        request.files.add(
+          await http.MultipartFile.fromPath('uploaded_videos', video.path),
+        );
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = jsonDecode(response.body);
+        log(decoded.toString());
+
+        if (decoded is Map<String, dynamic>) {
+          if (decoded['post'] is Map<String, dynamic>) {
+            return Post.fromJson(decoded['post']);
+          }
+
+          return Post.fromJson(decoded);
+        }
+
+        return decoded;
+      }
+
+      return "Update post failed: ${response.statusCode} ${response.body}";
+    } catch (e) {
       log(e.toString());
       return e.toString();
     }

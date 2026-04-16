@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/services.dart';
-
 import 'package:flutter/material.dart';
 import 'package:home_finder_/auth/api_service.dart';
 import 'package:home_finder_/auth/loggedUser.dart';
 import 'package:home_finder_/models/comments.dart';
 import 'package:home_finder_/models/posts.dart';
 import 'package:home_finder_/models/user.dart';
+import 'package:home_finder_/pages/edit_post.dart';
 import 'package:video_player/video_player.dart';
 
 class PostItemScreen extends StatefulWidget {
@@ -495,28 +494,7 @@ class _PostItemScreenState extends State<PostItemScreen> {
     );
   }
 
-  Widget _buildDetailChip({required IconData icon, required String label}) {
-    log(label);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withOpacity(0.12)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.white70),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildInfoRow(String label, String value, {IconData? icon}) {
     return Container(
@@ -601,7 +579,7 @@ class _PostItemScreenState extends State<PostItemScreen> {
                 backgroundColor: Colors.white.withOpacity(0.18),
                 backgroundImage: user.profilePicture != null &&
                         user.profilePicture!.trim().isNotEmpty
-                    ? NetworkImage(user.profilePicture!)
+                    ? NetworkImage('${ApiService.baseUrl}${user.profilePicture!}')
                     : null,
                 child: user.profilePicture == null ||
                         user.profilePicture!.trim().isEmpty
@@ -973,42 +951,27 @@ class _PostItemScreenState extends State<PostItemScreen> {
               children: [
                 _buildMediaSection(),
                 const SizedBox(height: 18),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    _buildDetailChip(
-                      icon: Icons.price_change_outlined,
-                      label: widget.post.rentPrice != null
-                          ? '\$${widget.post.rentPrice}'
-                          : 'Price unavailable',
+                user!.userId==LoggedUser.instance.user!.userId ? ElevatedButton(
+                  
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditPost(post: widget.post),
+                      ),
+                    );
+
+                  }, 
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.tealAccent.shade700,
+                    foregroundColor: Colors.black87,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    minimumSize: const Size(double.maxFinite, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                    _buildDetailChip(
-                      icon: Icons.house_outlined,
-                      label: widget.post.houseNumber?.trim().isNotEmpty == true
-                          ? widget.post.houseNumber!
-                          : 'House number not set',
-                    ),
-                    _buildDetailChip(
-                      icon: Icons.home_filled,
-                      label: widget.post.address?.trim().isNotEmpty == true
-                          ? widget.post.address!
-                          : 'Location unavailable',
-                    ),
-                    _buildDetailChip(
-                      icon: Icons.location_on_outlined,
-                      label: widget.post.address?.trim().isNotEmpty == true
-                          ? widget.post.address!
-                          : 'Location unavailable',
-                    ),
-                    _buildDetailChip(
-                      icon: widget.post.isRented == true
-                          ? Icons.event_busy_outlined
-                          : Icons.event_available_outlined,
-                      label: widget.post.isRented == true ? 'Rented' : 'Available',
-                    ),
-                  ],
-                ),
+                  ),
+                  child: Text('Edit Post')) : SizedBox.shrink(),
                 const SizedBox(height: 18),
                 Text(
                   'Description',
@@ -1081,7 +1044,7 @@ class _PostItemScreenState extends State<PostItemScreen> {
                 _buildInfoRow(
                   'Rent Price',
                   widget.post.rentPrice != null
-                      ? '\$${widget.post.rentPrice}'
+                      ? '${widget.post.rentPrice} tk.'
                       : 'Not available',
                   icon: Icons.payments_outlined,
                 ),
@@ -1094,8 +1057,8 @@ class _PostItemScreenState extends State<PostItemScreen> {
                       : Icons.check_circle_outline,
                 ),
                 const SizedBox(height: 18),
-                if (user != null) _buildContactSection(user),
-                if (user == null)
+                 _buildContactSection(user),
+                
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(18),

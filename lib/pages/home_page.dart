@@ -80,7 +80,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                    Text(
                     widget.user.email,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               )
