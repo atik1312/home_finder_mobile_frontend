@@ -30,6 +30,8 @@ class _HomePageState extends State<HomePage> {
     fetchPosts();
     log(posts.length.toString());
   }
+  
+  
   void onDelete() async {
     await fetchPosts();
   }
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context, index) {
                     log(posts[index].toString());
                     final post = posts[index];
-                    if(post.user==widget.user.userId){
+                    if(post.user==widget.user.userId|| post.isRented!){
                       return SizedBox.shrink();
                     }
                     log(index.toString());

@@ -284,7 +284,7 @@ class _EditPostState extends State<EditPost> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Post updated successfully.')),
       );
-      Navigator.pop(context, true);
+      Navigator.pop(context, result);
       return;
     }
 

@@ -39,7 +39,10 @@ class _PostItemScreenState extends State<PostItemScreen> {
     _mediaItems = _buildMediaItems();
     _prepareCurrentVideoIfNeeded();
   }
-
+  void reset(){
+    setState(() {
+    });
+  }
   Future<List<Comments>> _loadComments() async {
     final postId = widget.post.id;
     if (postId == null) {
@@ -951,15 +954,28 @@ class _PostItemScreenState extends State<PostItemScreen> {
               children: [
                 _buildMediaSection(),
                 const SizedBox(height: 18),
-                user!.userId==LoggedUser.instance.user!.userId ? ElevatedButton(
+                user?.userId==LoggedUser.instance.user!.userId ? ElevatedButton(
                   
-                  onPressed: (){
-                    Navigator.push(
+                  onPressed: ()async{
+                   Post? result= await  Navigator.push<Post>(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditPost(post: widget.post),
                       ),
                     );
+                    
+                   if(result!=null){
+                    setState(() {
+                      widget.post.description=result.description;
+                      widget.post.houseNumber=result.houseNumber;
+                      widget.post.geoLocation=result.geoLocation;
+                      widget.post.address=result.address;
+                      widget.post.rentPrice=result.rentPrice;
+                      widget.post.isRented=result.isRented;
+                      widget.post.images=result.images;
+                      widget.post.videos=result.videos;
+                    });
+                   }
 
                   }, 
                   style: ElevatedButton.styleFrom(
@@ -1057,9 +1073,9 @@ class _PostItemScreenState extends State<PostItemScreen> {
                       : Icons.check_circle_outline,
                 ),
                 const SizedBox(height: 18),
-                 _buildContactSection(user),
                 
-                  Container(
+                 user!=null?_buildContactSection(user)
+                 :                 Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
@@ -1089,6 +1105,9 @@ class _PostItemScreenState extends State<PostItemScreen> {
                       ],
                     ),
                   ),
+                
+                
+               
                 const SizedBox(height: 18),
                 _buildCommentsSection(),
                 const SizedBox(height: 18),
